@@ -1,0 +1,410 @@
+USE [master]
+GO
+/****** Object:  Database [Steam]    Script Date: 18.04.2023 16:18:50 ******/
+CREATE DATABASE [Steam]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'Steam', FILENAME = N'C:\Users\koray\Steam.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'Steam_log', FILENAME = N'C:\Users\koray\Steam_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT
+GO
+ALTER DATABASE [Steam] SET COMPATIBILITY_LEVEL = 150
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [Steam].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [Steam] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [Steam] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [Steam] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [Steam] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [Steam] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [Steam] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [Steam] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [Steam] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [Steam] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [Steam] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [Steam] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [Steam] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [Steam] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [Steam] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [Steam] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [Steam] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [Steam] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [Steam] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [Steam] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [Steam] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [Steam] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [Steam] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [Steam] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [Steam] SET  MULTI_USER 
+GO
+ALTER DATABASE [Steam] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [Steam] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [Steam] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [Steam] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [Steam] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [Steam] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+ALTER DATABASE [Steam] SET QUERY_STORE = OFF
+GO
+USE [Steam]
+GO
+/****** Object:  Table [dbo].[Categories]    Script Date: 18.04.2023 16:18:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Categories](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+ CONSTRAINT [PK_Categories] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Developers]    Script Date: 18.04.2023 16:18:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Developers](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](50) NOT NULL,
+ CONSTRAINT [PK_Developers] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GameReviews]    Script Date: 18.04.2023 16:18:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GameReviews](
+	[GameId] [int] NOT NULL,
+	[UserId] [int] NOT NULL,
+	[Review] [varchar](250) NOT NULL,
+ CONSTRAINT [PK_GameReviews] PRIMARY KEY CLUSTERED 
+(
+	[GameId] ASC,
+	[UserId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Games]    Script Date: 18.04.2023 16:18:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Games](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](50) NOT NULL,
+	[PublisherId] [int] NOT NULL,
+	[Price] [money] NOT NULL,
+	[About] [nvarchar](max) NOT NULL,
+	[ReleaseDate] [date] NOT NULL,
+	[MinımumHardware] [nvarchar](1000) NULL,
+	[RecommendedHardware] [nvarchar](1000) NULL,
+ CONSTRAINT [PK_Games] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GamesCategories]    Script Date: 18.04.2023 16:18:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GamesCategories](
+	[CategoryId] [int] NOT NULL,
+	[GameId] [int] NOT NULL,
+ CONSTRAINT [PK_GamesCategories] PRIMARY KEY CLUSTERED 
+(
+	[CategoryId] ASC,
+	[GameId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GamesDevelopers]    Script Date: 18.04.2023 16:18:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GamesDevelopers](
+	[DeveloperId] [int] NOT NULL,
+	[GameId] [int] NOT NULL,
+ CONSTRAINT [PK_GamesDevelopers] PRIMARY KEY CLUSTERED 
+(
+	[DeveloperId] ASC,
+	[GameId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GamesLanguages]    Script Date: 18.04.2023 16:18:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GamesLanguages](
+	[GameId] [int] NOT NULL,
+	[LanguageId] [int] NOT NULL,
+ CONSTRAINT [PK_GamesLanguages] PRIMARY KEY CLUSTERED 
+(
+	[GameId] ASC,
+	[LanguageId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[languages]    Script Date: 18.04.2023 16:18:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[languages](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Language] [nvarchar](50) NOT NULL,
+ CONSTRAINT [PK_languages] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Messages]    Script Date: 18.04.2023 16:18:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Messages](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[FromUser] [int] NOT NULL,
+	[ToUser] [int] NOT NULL,
+	[Message] [nvarchar](250) NOT NULL,
+ CONSTRAINT [PK_Messages] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Publishers]    Script Date: 18.04.2023 16:18:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Publishers](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](50) NOT NULL,
+ CONSTRAINT [PK_Publishers] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Users]    Script Date: 18.04.2023 16:18:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Users](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[UserMail] [nvarchar](100) NOT NULL,
+	[UserName] [nvarchar](100) NOT NULL,
+	[UserPassword] [nvarchar](100) NOT NULL,
+ CONSTRAINT [PK_Users_1] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[Categories] ON 
+GO
+INSERT [dbo].[Categories] ([id], [Name]) VALUES (1, N'Single-player')
+GO
+INSERT [dbo].[Categories] ([id], [Name]) VALUES (2, N'Online PvP')
+GO
+INSERT [dbo].[Categories] ([id], [Name]) VALUES (3, N'Online Co-op')
+GO
+INSERT [dbo].[Categories] ([id], [Name]) VALUES (4, N'Open World')
+GO
+SET IDENTITY_INSERT [dbo].[Categories] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Developers] ON 
+GO
+INSERT [dbo].[Developers] ([id], [Name]) VALUES (1, N'Dice')
+GO
+INSERT [dbo].[Developers] ([id], [Name]) VALUES (2, N'Rockstar North')
+GO
+SET IDENTITY_INSERT [dbo].[Developers] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Games] ON 
+GO
+INSERT [dbo].[Games] ([id], [Name], [PublisherId], [Price], [About], [ReleaseDate], [MinımumHardware], [RecommendedHardware]) VALUES (1, N'Grand Theft Auto V', 3, 60.0000, N'When a young street hustler, a retired bank robber and a terrifying psychopath find themselves entangled with some of the most frightening and deranged elements of the criminal underworld, the U.S. government and the entertainment industry, they must pull off a series of dangerous heists to survive in a ruthless city in which they can trust nobody, least of all each other.
+
+Grand Theft Auto V for PC offers players the option to explore the award-winning world of Los Santos and Blaine County in resolutions of up to 4k and beyond, as well as the chance to experience the game running at 60 frames per second.
+
+The game offers players a huge range of PC-specific customization options, including over 25 separate configurable settings for texture quality, shaders, tessellation, anti-aliasing and more, as well as support and extensive customization for mouse and keyboard controls. Additional options include a population density slider to control car and pedestrian traffic, as well as dual and triple monitor support, 3D compatibility, and plug-and-play controller support.
+
+Grand Theft Auto V for PC also includes Grand Theft Auto Online, with support for 30 players and two spectators. Grand Theft Auto Online for PC will include all existing gameplay upgrades and Rockstar-created content released since the launch of Grand Theft Auto Online, including Heists and Adversary modes.
+
+The PC version of Grand Theft Auto V and Grand Theft Auto Online features First Person Mode, giving players the chance to explore the incredibly detailed world of Los Santos and Blaine County in an entirely new way.
+
+Grand Theft Auto V for PC also brings the debut of the Rockstar Editor, a powerful suite of creative tools to quickly and easily capture, edit and share game footage from within Grand Theft Auto V and Grand Theft Auto Online. The Rockstar Editor’s Director Mode allows players the ability to stage their own scenes using prominent story characters, pedestrians, and even animals to bring their vision to life. Along with advanced camera manipulation and editing effects including fast and slow motion, and an array of camera filters, players can add their own music using songs from GTAV radio stations, or dynamically control the intensity of the game’s score. Completed videos can be uploaded directly from the Rockstar Editor to YouTube and the Rockstar Games Social Club for easy sharing.
+
+Soundtrack artists The Alchemist and Oh No return as hosts of the new radio station, The Lab FM. The station features new and exclusive music from the production duo based on and inspired by the game’s original soundtrack. Collaborating guest artists include Earl Sweatshirt, Freddie Gibbs, Little Dragon, Killer Mike, Sam Herring from Future Islands, and more. Players can also discover Los Santos and Blaine County while enjoying their own music through Self Radio, a new radio station that will host player-created custom soundtracks.', CAST(N'2015-01-14' AS Date), N'Requires a 64-bit processor and operating system
+OS: Windows 10 64 Bit, Windows 8.1 64 Bit, Windows 8 64 Bit, Windows 7 64 Bit Service Pack 1
+Processor: Intel Core 2 Quad CPU Q6600 @ 2.40GHz (4 CPUs) / AMD Phenom 9850 Quad-Core Processor (4 CPUs) @ 2.5GHz
+Memory: 4 GB RAM
+Graphics: NVIDIA 9800 GT 1GB / AMD HD 4870 1GB (DX 10, 10.1, 11)
+Storage: 72 GB available space
+Sound Card: 100% DirectX 10 compatible', N'Requires a 64-bit processor and operating system
+OS: Windows 10 64 Bit, Windows 8.1 64 Bit, Windows 8 64 Bit, Windows 7 64 Bit Service Pack 1
+Processor: Intel Core i5 3470 @ 3.2GHz (4 CPUs) / AMD X8 FX-8350 @ 4GHz (8 CPUs)
+Memory: 8 GB RAM
+Graphics: NVIDIA GTX 660 2GB / AMD HD 7870 2GB
+Storage: 72 GB available space
+Sound Card: 100% DirectX 10 compatible')
+GO
+SET IDENTITY_INSERT [dbo].[Games] OFF
+GO
+INSERT [dbo].[GamesCategories] ([CategoryId], [GameId]) VALUES (1, 1)
+GO
+INSERT [dbo].[GamesCategories] ([CategoryId], [GameId]) VALUES (2, 1)
+GO
+INSERT [dbo].[GamesCategories] ([CategoryId], [GameId]) VALUES (3, 1)
+GO
+INSERT [dbo].[GamesCategories] ([CategoryId], [GameId]) VALUES (4, 1)
+GO
+INSERT [dbo].[GamesLanguages] ([GameId], [LanguageId]) VALUES (1, 1)
+GO
+SET IDENTITY_INSERT [dbo].[languages] ON 
+GO
+INSERT [dbo].[languages] ([id], [Language]) VALUES (1, N'English')
+GO
+SET IDENTITY_INSERT [dbo].[languages] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Messages] ON 
+GO
+INSERT [dbo].[Messages] ([id], [FromUser], [ToUser], [Message]) VALUES (1, 1, 2, N'hello')
+GO
+INSERT [dbo].[Messages] ([id], [FromUser], [ToUser], [Message]) VALUES (2, 2, 1, N'hi')
+GO
+SET IDENTITY_INSERT [dbo].[Messages] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Publishers] ON 
+GO
+INSERT [dbo].[Publishers] ([id], [Name]) VALUES (1, N'EA')
+GO
+INSERT [dbo].[Publishers] ([id], [Name]) VALUES (2, N'Activision')
+GO
+INSERT [dbo].[Publishers] ([id], [Name]) VALUES (3, N'Rockstar Games')
+GO
+SET IDENTITY_INSERT [dbo].[Publishers] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Users] ON 
+GO
+INSERT [dbo].[Users] ([id], [UserMail], [UserName], [UserPassword]) VALUES (1, N'user@mail.com', N'user', N'1234')
+GO
+INSERT [dbo].[Users] ([id], [UserMail], [UserName], [UserPassword]) VALUES (2, N'user2@gmail.com', N'user2', N'5678')
+GO
+SET IDENTITY_INSERT [dbo].[Users] OFF
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UK_UserMail]    Script Date: 18.04.2023 16:18:50 ******/
+CREATE UNIQUE NONCLUSTERED INDEX [UK_UserMail] ON [dbo].[Users]
+(
+	[UserMail] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[GameReviews]  WITH CHECK ADD  CONSTRAINT [FK_GameReviews_Games] FOREIGN KEY([GameId])
+REFERENCES [dbo].[Games] ([id])
+GO
+ALTER TABLE [dbo].[GameReviews] CHECK CONSTRAINT [FK_GameReviews_Games]
+GO
+ALTER TABLE [dbo].[GameReviews]  WITH CHECK ADD  CONSTRAINT [FK_GameReviews_Users] FOREIGN KEY([UserId])
+REFERENCES [dbo].[Users] ([id])
+GO
+ALTER TABLE [dbo].[GameReviews] CHECK CONSTRAINT [FK_GameReviews_Users]
+GO
+ALTER TABLE [dbo].[Games]  WITH CHECK ADD  CONSTRAINT [FK_Games_Publishers] FOREIGN KEY([PublisherId])
+REFERENCES [dbo].[Publishers] ([id])
+GO
+ALTER TABLE [dbo].[Games] CHECK CONSTRAINT [FK_Games_Publishers]
+GO
+ALTER TABLE [dbo].[GamesCategories]  WITH CHECK ADD  CONSTRAINT [FK_GamesCategories_Categories] FOREIGN KEY([CategoryId])
+REFERENCES [dbo].[Categories] ([id])
+GO
+ALTER TABLE [dbo].[GamesCategories] CHECK CONSTRAINT [FK_GamesCategories_Categories]
+GO
+ALTER TABLE [dbo].[GamesCategories]  WITH CHECK ADD  CONSTRAINT [FK_GamesCategories_Games] FOREIGN KEY([GameId])
+REFERENCES [dbo].[Games] ([id])
+GO
+ALTER TABLE [dbo].[GamesCategories] CHECK CONSTRAINT [FK_GamesCategories_Games]
+GO
+ALTER TABLE [dbo].[GamesDevelopers]  WITH CHECK ADD  CONSTRAINT [FK_GamesDevelopers_Developers] FOREIGN KEY([DeveloperId])
+REFERENCES [dbo].[Developers] ([id])
+GO
+ALTER TABLE [dbo].[GamesDevelopers] CHECK CONSTRAINT [FK_GamesDevelopers_Developers]
+GO
+ALTER TABLE [dbo].[GamesDevelopers]  WITH CHECK ADD  CONSTRAINT [FK_GamesDevelopers_Games] FOREIGN KEY([GameId])
+REFERENCES [dbo].[Games] ([id])
+GO
+ALTER TABLE [dbo].[GamesDevelopers] CHECK CONSTRAINT [FK_GamesDevelopers_Games]
+GO
+ALTER TABLE [dbo].[GamesLanguages]  WITH CHECK ADD  CONSTRAINT [FK_GamesLanguages_Games] FOREIGN KEY([GameId])
+REFERENCES [dbo].[Games] ([id])
+GO
+ALTER TABLE [dbo].[GamesLanguages] CHECK CONSTRAINT [FK_GamesLanguages_Games]
+GO
+ALTER TABLE [dbo].[GamesLanguages]  WITH CHECK ADD  CONSTRAINT [FK_GamesLanguages_languages] FOREIGN KEY([LanguageId])
+REFERENCES [dbo].[languages] ([id])
+GO
+ALTER TABLE [dbo].[GamesLanguages] CHECK CONSTRAINT [FK_GamesLanguages_languages]
+GO
+ALTER TABLE [dbo].[Messages]  WITH CHECK ADD  CONSTRAINT [FK_Messages_Users] FOREIGN KEY([FromUser])
+REFERENCES [dbo].[Users] ([id])
+GO
+ALTER TABLE [dbo].[Messages] CHECK CONSTRAINT [FK_Messages_Users]
+GO
+ALTER TABLE [dbo].[Messages]  WITH CHECK ADD  CONSTRAINT [FK_Messages_Users1] FOREIGN KEY([ToUser])
+REFERENCES [dbo].[Users] ([id])
+GO
+ALTER TABLE [dbo].[Messages] CHECK CONSTRAINT [FK_Messages_Users1]
+GO
+USE [master]
+GO
+ALTER DATABASE [Steam] SET  READ_WRITE 
+GO
